@@ -1,7 +1,7 @@
 # TODO: Change the name of the org
 org: sdhave
-app: serverless-todo-app
-service: serverless-todo-app
+app: udacity-serverless-todo-app
+service: udacity-serverless-todo-app
 
 plugins:
   - serverless-webpack
@@ -23,9 +23,9 @@ provider:
   # Use these variables in the functions and resouorces section below. For example,
   # ${self:provider.environment.ATTACHMENT_S3_BUCKET}
   environment:
-    TODOS_TABLE: Todos-${self:provider.stage}
+    TODOS_TABLE: todos-table-${self:provider.stage}
     TODOS_CREATED_AT_INDEX: CreatedAtIndex
-    ATTACHMENT_S3_BUCKET: serverless-todo-images-${self:provider.stage}
+    ATTACHMENT_S3_BUCKET: sdhave-todo-images-bucket-${self:provider.stage}
     SIGNED_URL_EXPIRATION: 300
 
   logs:
@@ -40,7 +40,6 @@ provider:
             - xray:PutTelemetryRecords
             - xray:PutTraceSegments
           Resource: "*"
-
 
 functions:
 
@@ -95,7 +94,7 @@ functions:
           authorizer: Auth
           cors: true
           request:
-            schema:
+            schemas:
               application/json: ${file(models/update-todo-model.json)}
     iamRoleStatements:
       - Effect: "Allow"

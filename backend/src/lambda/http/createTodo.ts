@@ -1,55 +1,26 @@
-import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
 import 'source-map-support/register'
-import * as middy from 'middy'
-import { cors } from 'middy/middlewares'
-import { CreateTodoRequest } from '../../requests/CreateTodoRequest'
-import uuid from 'uuid'
 
-import { db } from '../../helpers/db'
-// import { getUserId } from '../utils';
-// import { createTodo } from '../../businessLogic/todos'
+import { APIGatewayProxyEvent, APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda'
+import { CreateTodoRequest } from '../../requests/CreateTodoRequest';
+import { createToDo } from "../../helpers/todos";
 
-export const handler = middy(
-  async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-    const newTodo: CreateTodoRequest = JSON.parse(event.body)
+export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     // TODO: Implement creating a new TODO item
-        try {
-            // Get post id from Parameters
-            const todoId = uuid.v4()
-            // Parameters for adding item to db
-            const params = {
-                TableName: process.env.TODOS_TABLE,
-                Key: todoId,
-                Item: { todoId, ...newTodo }
-            }
-            // Adding the new item to the database
-            await db.put(params).promise()
-            // Response body for success
-            return {
-              statusCode: 200,
-              body: JSON.stringify({
-                message: "Successfully Added Todo",
-                data: newTodo
-              })
-            }
+    // console.log("Processing Event ", event);
+    const authorization = event.headers.Authorization;
+    const split = authorization.split(' ');
+    const jwtToken = split[1];
 
-        } catch (e) {
-            console.error(e)
-            // Response body for failed
-            return {
-              statusCode: 500,
-              body: JSON.stringify({
-                message: "Failed to Add Todo",
-                errorMsg: e.message,
-                errorStack: e.stack
-              })
-            }
-        }
-      }
-)
+    const newTodo: CreateTodoRequest = JSON.parse(event.body);
+    const toDoItem = await createToDo(newTodo, jwtToken);
 
-handler.use(
-  cors({
-    credentials: true
-  })
-)
+    return {
+        statusCode: 201,
+        headers: {
+            "Access-Control-Allow-Origin": "*",
+        },
+        body: JSON.stringify({
+            "item": toDoItem
+        }),
+    }
+};
