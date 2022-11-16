@@ -1,19 +1,47 @@
 import 'source-map-support/register'
 
-import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
+import { APIGatewayProxyResult } from 'aws-lambda'
 import * as middy from 'middy'
 import { cors } from 'middy/middlewares'
 
-import { getTodosForUser as getTodosForUser } from '../../businessLogic/todos'
-import { getUserId } from '../utils';
+import { db } from '../../helpers/db'
+
+// import { getTodosForUser as getTodosForUser } from '../../businessLogic/todos'
+// import { getUserId } from '../utils';
 
 // TODO: Get all TODO items for a current user
 export const handler = middy(
-  async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+  async (): Promise<APIGatewayProxyResult> => {
     // Write your code here
-    const todos = '...'
-
-    return undefined
+    try {
+        // Parameters for geting items from db
+        const params = {
+            TableName: process.env.TODOS_TABLE
+        }
+        // Adding the new item to the database
+        const { Items } = await db.scan(params).promise()
+        // Response body for success
+        return {
+              statusCode: 200,
+              body: JSON.stringify({
+                message: "Successfully Retrieved Todos",
+                data: Items
+              })
+            }
+    } catch (e) {
+        console.error(e)
+        // Response body for failed
+        return {
+          statusCode: 500,
+          body: JSON.stringify({
+            message: "Failed to Retrive Todos",
+            errorMsg: e.message,
+            errorStack: e.stack
+          })
+        }
+    }
+  }
+)
 
 handler.use(
   cors({
