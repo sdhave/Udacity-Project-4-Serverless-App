@@ -25,7 +25,7 @@ export class TodosAccess {
         return todoItem as TodoItem;
     }
 
-    //get all todos by userId
+    // GET TODOS FOR A SPECIFIC USER
     async  getAllTodosByUserId(userId: string): Promise<TodoItem[]> {
         const result = await this.docClient.query({
             TableName: this.Todos_Table,
@@ -38,7 +38,7 @@ export class TodosAccess {
         return result.Items  as TodoItem[]
     }
 
-    //update todos
+    // UPDATE TODO
     async  updateTodos(userId: string, todoId: string, todoUpdate: UpdateTodoRequest): Promise<UpdateTodoRequest> {
         await this.docClient.update({
             TableName: this.Todos_Table,
@@ -60,7 +60,7 @@ export class TodosAccess {
         return todoUpdate
     }
 
-    //datalogic to delete todos
+    // DELETE TODO
     async deleteToDo(todoId: string, userId: string): Promise<string> {
         console.log("Deleting todo");
 
@@ -78,7 +78,7 @@ export class TodosAccess {
         return "" as string;
     }
 
-    //add
+    // ADD TODO IMAGE (ATTACHMENT)
     async addAttachment(todo: TodoItem): Promise<TodoItem> {
         const result = await this.docClient.update({
             TableName: this.Todos_Table,
@@ -94,7 +94,7 @@ export class TodosAccess {
         return result.Attributes as TodoItem
     }
 
-    //get all todos by todoID
+    // 
     async getAllTodoById(todoId: string):Promise<TodoItem>  {
     const output= await this.docClient.query({
             TableName: this.Todos_Table,
@@ -110,7 +110,7 @@ export class TodosAccess {
     }
 }
 
-//connect to DynamoDBClient
+// CONNECT TO DynamoDBClient
 function createDynamoDBClient() {
     if (process.env.IS_OFFLINE) {
       console.log('Creating a local DynamoDB instance')

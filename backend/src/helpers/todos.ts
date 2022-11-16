@@ -7,7 +7,6 @@ import { parseUserId } from "../auth/utils";
 const todosAccess = new TodosAccess();
 const uuidv4 = require('uuid/v4');
 
-
 export function getAllTodosByUserId(userId:string):Promise<TodoItem[]>{
     return todosAccess.getAllTodosByUserId(userId)
 }
@@ -27,22 +26,18 @@ export function createToDo(createTodoRequest: CreateTodoRequest, jwtToken: strin
     });
 }
 
-
 export async function updateTodos(userId: string, todoId: string, todoUpdate: UpdateTodoRequest): Promise<UpdateTodoRequest> {
     return await todosAccess.updateTodos(todoId, userId,todoUpdate);
 }
-
 
 export function deleteToDo(todoId: string, jwtToken: string): Promise<string> {
     const userId = parseUserId(jwtToken);
     return todosAccess.deleteToDo(todoId, userId);
 }
 
-
 export async function getAllTodoById(todoId: string) {
     return await todosAccess.getAllTodoById(todoId);
 }
-
 
 export async function addAttachment(todo: TodoItem): Promise<TodoItem> {
     return await todosAccess.addAttachment(todo);
