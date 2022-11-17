@@ -1,7 +1,7 @@
 import { CreateTodoRequest } from '../requests/CreateTodoRequest';
 import { UpdateTodoRequest }from '../requests/UpdateTodoRequest';
 import { TodoItem } from '../models/TodoItem'
-import { TodosAccess } from '../helpers/todosAcess';
+import { TodosAccess } from '../dataAccess/todosAcess';
 import { parseUserId } from "../auth/utils";
 
 const todosAccess = new TodosAccess();

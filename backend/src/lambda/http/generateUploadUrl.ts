@@ -2,8 +2,8 @@ import 'source-map-support/register'
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
 import * as middy from 'middy'
 import { cors, httpErrorHandler } from 'middy/middlewares'
-import { getAllTodoById, addAttachment} from '../../helpers/todos'
-import { UploadUrl } from '../../helpers/attachmentUtils'
+import { getAllTodoById, addAttachment} from '../../businessLogic/todos'
+import { UploadUrl } from '../../fileStorage/attachmentUtils'
 
 const bucket_Name = process.env.ATTACHMENT_S3_BUCKET
 

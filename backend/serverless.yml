@@ -87,16 +87,13 @@ functions:
           method: POST # GatewayResponseDefault4XX
           path: todos
           cors: true
-          # authorizer: Auth
-          # request:
-          #   schemas:
-          #     application/json: ${file(models/create-todo-model.json)}
+          authorizer: Auth
           reqValidatorName: RequestBodyValidator
-          documentation:
-            summary: Create a new todo
-            description: Create a new todo
-            requestModels:
-              'application/json': TodoRequest
+          # documentation:
+          #   summary: Create a new todo
+          #   description: Create a new todo
+          #   requestModels:
+          #     'application/json': TodoRequest
     iamRoleStatements:
       - Effect: "Allow"
         Action:
