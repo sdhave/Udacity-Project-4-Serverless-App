@@ -7,6 +7,8 @@ plugins:
   - serverless-webpack
   - serverless-iam-roles-per-function
   - serverless-plugin-tracing
+  - serverless-reqvalidator-plugin
+  - serverless-aws-documentation
 
 
 provider:
@@ -41,6 +43,18 @@ provider:
             - xray:PutTraceSegments
           Resource: "*"
 
+custom:
+  documentation:
+    api:
+      info:
+        version: v1.0.0
+        title: Todos API 
+        description: Serverless App for Todos
+    models:
+      - name: TodoRequest
+        contentType: application/json
+        schema: ${file(models/create-todo-model.json)}
+
 functions:
 
   Auth:
@@ -74,9 +88,15 @@ functions:
           path: todos
           cors: true
           # authorizer: Auth
-          request:
-            schemas:
-              application/json: ${file(models/create-todo-model.json)}
+          # request:
+          #   schemas:
+          #     application/json: ${file(models/create-todo-model.json)}
+          reqValidatorName: RequestBodyValidator
+          documentation:
+            summary: Create a new todo
+            description: Create a new todo
+            requestModels:
+              'application/json': TodoRequest
     iamRoleStatements:
       - Effect: "Allow"
         Action:
@@ -145,6 +165,16 @@ functions:
 
 resources:
   Resources:
+
+    RequestBodyValidator:
+      Type: AWS::ApiGateway::RequestValidator
+      Properties:
+        Name: 'request-body-validator'
+        RestApiId: 
+          Ref: ApiGatewayRestApi
+        ValidateRequestBody: true 
+        ValidateRequestParameters: false
+
     # Add necessary AWS resources. You will need at least the following AWS resources
     # TODO: Fill the properties
     # Feel free to change the names as you like.
